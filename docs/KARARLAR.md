@@ -173,6 +173,27 @@ Yeni karar en alta eklenir; eski karar değişirse silinmez, "Değişti" notuyla
 - Tutar kolonları sağa hizalı, tabular rakamlarla.
 - Grafik paleti renk körlüğü testinden geçmiş sabit sırayla kullanılır.
 
+## K13 — Kurulumsuz açılış: GitHub Codespaces
+
+**Tarih:** 2026-10-15
+
+**Karar.** Depoda `.devcontainer/` var:
+- Codespace açılınca PostgreSQL ayağa kalkar.
+- İlk açılışta bağımlılıklar kurulur, demo veri yüklenir ve uygulama derlenir.
+- Uygulama 3000 portunda kendiliğinden başlar.
+
+**Neden.** Ekibin ve ilk müşteri adaylarının prototipi bilgisayara Node, Docker ya da veritabanı kurmadan açıp kurcalayabilmesi.
+
+**Dikkat.** Codespaces'te uygulama `https://<codespace>-3000.app.github.dev` adresinden açılır, ama sunucu kendini `localhost:3000` sanır. Bu yüzden:
+- `setup.sh` bu adresi `.env`'deki `BETTER_AUTH_URL`'e yazar. Yazmazsa giriş isteği "tanınmayan köken" diye 403 alır.
+- `next.config.ts` aynı adresi Server Action ve geliştirme sunucusu izin listelerine ekler.
+
+Proxy arkasındaki bu senaryo yerelde HTTPS ters proxy ile benzetilip test edildi:
+- düzeltme olmadan giriş reddedildi;
+- düzeltmeyle giriş, Server Action ve belge onayı hem üretim hem geliştirme modunda çalıştı.
+
+**Bedeli.** Codespaces kişisel hesapta aylık kotayla ücretsiz; yoğun kullanımda ücretli. Kalıcı ve herkese açık demo adresi için ayrıca barındırma gerekir (bkz. K10).
+
 ---
 
 ## Sıradaki adımlar (öncelik sırasıyla öneri)

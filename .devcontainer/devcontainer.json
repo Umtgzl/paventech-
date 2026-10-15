@@ -1,0 +1,21 @@
+// GitHub Codespaces / VS Code Dev Containers: hiçbir şey kurmadan tarayıcıda çalıştırmak için.
+// İlk açılışta bağımlılıklar kurulur, veritabanı demo veriyle doldurulur ve uygulama derlenir
+// (3-5 dk). Sonra uygulama 3000 portunda kendiliğinden başlar ve yeni sekmede açılır.
+{
+  "name": "Paventech ERP",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": { "label": "Paventech ERP", "onAutoForward": "openBrowser" },
+    "5432": { "label": "PostgreSQL", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start.sh",
+  "hostRequirements": { "cpus": 2, "memory": "4gb" },
+  "customizations": {
+    "codespaces": { "openFiles": ["README.md"] },
+    "vscode": { "extensions": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"] }
+  }
+}

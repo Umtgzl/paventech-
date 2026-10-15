@@ -1,0 +1,23 @@
+# Codespace içindeki iki konteyner: uygulama (Node 22) ve PostgreSQL 16.
+# Uygulama konteyneri veritabanının ağını paylaşır; veritabanına localhost:5432 ile ulaşılır.
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/typescript-node:22-bookworm
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    network_mode: service:db
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: paventech
+      POSTGRES_PASSWORD: paventech
+      POSTGRES_DB: paventech_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../scripts/docker-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  pgdata:

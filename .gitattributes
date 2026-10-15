@@ -1,0 +1,2 @@
+# Kabuk betikleri Windows'ta da LF satır sonuyla kalsın (konteynerde çalışırlar)
+*.sh text eol=lf

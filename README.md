@@ -11,7 +11,31 @@ kayıt motoruyla, Plus modüller örnek veriyle çalışan önizlemelerle gelir
 
 > Demo verisindeki tüm şirketler, kişiler ve rakamlar kurgusaldır.
 
-## Hızlı başlangıç
+## Uygulamayı açmak
+
+### A) Tarayıcıda, hiçbir şey kurmadan (önerilen)
+
+GitHub Codespaces, uygulamayı GitHub'ın bulut makinesinde çalıştırır. Bilgisayara bir şey
+kurmak gerekmez; bilgisayar tarayıcısı yeterli (telefonda zahmetli olur).
+
+[![GitHub Codespaces'te aç](https://github.com/codespaces/badge.svg)](https://codespaces.new/Umtgzl/paventech-)
+
+1. Yukarıdaki düğmeye tıklayın ve açılan sayfada **Create codespace** deyin.
+   Ya da depo sayfasında yeşil **Code** düğmesi → **Codespaces** sekmesi → **Create codespace on …**
+2. Tarayıcıda bir kod editörü (VS Code) açılır. Alttaki terminalde kurulum adımları akar
+   (`==> ...`). İlk açılış **3-5 dakika** sürer; terminali kapatmayın.
+3. Kurulum bitince uygulama yeni bir sekmede kendiliğinden açılır. Açılmazsa:
+   1. Alttaki **PORTS** sekmesine geçin.
+   2. **Paventech ERP (3000)** satırında dünya simgesine (**Open in Browser**) tıklayın.
+4. Giriş sayfasında **Demo hesapları** kutusundan birine tıklayın, sonra **Giriş yap**.
+
+Bilinmesi gerekenler:
+- **Kullanılmayan codespace durur.** 30 dakika boyunca kullanılmazsa durur; veriler kaybolmaz. Tekrar açmak için [github.com/codespaces](https://github.com/codespaces) sayfasında codespace'in adına tıklayın. Uygulama kendiliğinden yeniden başlar.
+- **Ücretsiz kota.** Kişisel GitHub hesaplarında aylık ücretsiz kullanım kotası var. İşiniz bitince aynı sayfadan **Stop codespace** diyebilirsiniz.
+- **Demo veriyi baştan yüklemek** için terminalde `pnpm db:reset` çalıştırın.
+- **Kod değiştirip anında görmek** için terminalde önce `pkill -f next-server` ile arka plandaki demo sunucusunu durdurun, sonra `pnpm dev` çalıştırın.
+
+### B) Kendi bilgisayarında
 
 Gereksinimler: Node.js 22+, pnpm 10+, Docker (veya yerel PostgreSQL 16).
 
@@ -112,6 +136,7 @@ src/
                   oturum ve yetki, Server Action'lar, demo veri
 tests/            Entegrasyon testleri (gerçek PostgreSQL ile)
 drizzle/          Veritabanı göçleri (elle değiştirilmez, pnpm db:generate üretir)
+.devcontainer/    GitHub Codespaces ortamı: Node 22 + PostgreSQL 16, ilk kurulum ve başlatma
 docs/KARARLAR.md  Mimari ve ürün kararları
 ```
 
