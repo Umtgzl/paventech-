@@ -84,6 +84,7 @@ export function DocumentForm({ def, data, today, initial, documentId }: Document
   const [warehouseId, setWarehouseId] = useState(initial?.warehouseId ?? defaultWarehouse);
   const [targetWarehouseId, setTargetWarehouseId] = useState(initial?.targetWarehouseId ?? "");
   const [cashAccountId, setCashAccountId] = useState(initial?.cashAccountId ?? data.cashAccounts[0]?.value ?? "");
+  const [targetCashAccountId, setTargetCashAccountId] = useState(initial?.targetCashAccountId ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [amount, setAmount] = useState(toInput(initial?.amount));
   const [lines, setLines] = useState<LineState[]>(() => {
@@ -167,6 +168,7 @@ export function DocumentForm({ def, data, today, initial, documentId }: Document
       warehouseId: def.lines === "urun" ? warehouseId || null : null,
       targetWarehouseId: def.transfer ? targetWarehouseId || null : null,
       cashAccountId: def.cash !== 0 ? cashAccountId || null : null,
+      targetCashAccountId: def.cashTransfer ? targetCashAccountId || null : null,
       notes,
       sourceDocumentId: initial?.sourceDocumentId ?? null,
       amount: def.lines === "yok" ? amount : null,
@@ -280,13 +282,32 @@ export function DocumentForm({ def, data, today, initial, documentId }: Document
             </Field>
           )}
           {def.cash !== 0 && (
-            <Field label="Kasa / banka hesabı" htmlFor="cashAccountId" required error={fieldErrors.cashAccountId}>
+            <Field
+              label={def.cashTransfer ? "Çıkış hesabı" : "Kasa / banka hesabı"}
+              htmlFor="cashAccountId"
+              required
+              error={fieldErrors.cashAccountId}
+            >
               <NativeSelect id="cashAccountId" value={cashAccountId} onChange={(e) => setCashAccountId(e.target.value)}>
                 {data.cashAccounts.map((c) => (
                   <option key={c.value} value={c.value}>
                     {c.label} ({c.hint})
                   </option>
                 ))}
+              </NativeSelect>
+            </Field>
+          )}
+          {def.cashTransfer && (
+            <Field label="Giriş hesabı" htmlFor="targetCashAccountId" required error={fieldErrors.targetCashAccountId}>
+              <NativeSelect id="targetCashAccountId" value={targetCashAccountId} onChange={(e) => setTargetCashAccountId(e.target.value)}>
+                <option value="">Seçin...</option>
+                {data.cashAccounts
+                  .filter((c) => c.value !== cashAccountId)
+                  .map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label} ({c.hint})
+                    </option>
+                  ))}
               </NativeSelect>
             </Field>
           )}
@@ -490,11 +511,12 @@ export function DocumentForm({ def, data, today, initial, documentId }: Document
           <div className="flex-1" />
           <Button type="button" variant="outline" disabled={pending} onClick={() => submit(false)}>
             {pending && !approveMode ? <Loader2 className="animate-spin" /> : <Save />}
-            Taslak kaydet
+            Taslak<span className="hidden sm:inline"> kaydet</span>
           </Button>
           <Button type="submit" disabled={pending}>
             {pending && approveMode ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
-            Kaydet ve onayla
+            <span className="hidden sm:inline">Kaydet ve onayla</span>
+            <span className="sm:hidden">Onayla</span>
           </Button>
         </div>
       </div>

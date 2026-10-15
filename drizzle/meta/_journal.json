@@ -15,6 +15,20 @@
       "when": 1792058656761,
       "tag": "0001_abnormal_brother_voodoo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792060072550,
+      "tag": "0002_bored_toad",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792060793481,
+      "tag": "0003_clear_cerise",
+      "breakpoints": true
     }
   ]
 }

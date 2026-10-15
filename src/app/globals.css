@@ -46,11 +46,27 @@
   --sidebar-accent: oklch(0.935 0.02 262);
   --sidebar-accent-foreground: oklch(0.3 0.09 262);
 
-  --chart-1: oklch(0.55 0.17 262);
-  --chart-2: oklch(0.7 0.13 170);
-  --chart-3: oklch(0.72 0.15 70);
-  --chart-4: oklch(0.6 0.18 330);
-  --chart-5: oklch(0.6 0.02 262);
+  /* Grafik renkleri: doğrulanmış kategorik palet (renk körlüğü testinden geçti).
+     Sıra değişmemeli; sıra, renk körlüğü güvenliğinin kendisidir. */
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+  --chart-muted: #898781;
+}
+
+/* Koyu tema için hazır (uygulama genelinde koyu tema sonraki aşamada) */
+.dark {
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
 }
 
 @theme inline {
@@ -89,6 +105,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;

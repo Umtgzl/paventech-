@@ -6,6 +6,7 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { member, organization, session as sessionTable, tenantProfile } from "@/server/db/schema";
 import { runAction } from "@/server/actions";
+import { zodFieldErrors } from "@/server/domain/errors";
 import { getSession, UserError } from "@/server/session";
 import { addUserToTenant, createTenant, setTenantModules } from "@/server/domain/tenants";
 import { dependentModules, isModuleKey, MODULE_MAP, PLANS, requiredModules, type ModuleKey } from "@/lib/modules";
@@ -35,7 +36,7 @@ export async function createTenantAction(input: z.input<typeof newTenantSchema>)
     const s = await requireAdmin();
     const parsed = newTenantSchema.safeParse(input);
     if (!parsed.success) {
-      throw new UserError("Formda hatalar var.", fieldErrors(parsed.error));
+      throw new UserError("Formda hatalar var.", zodFieldErrors(parsed.error));
     }
     const v = parsed.data;
     const baseSlug = normalizeTr(v.name).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "sirket";
@@ -126,7 +127,7 @@ export async function updateTenantProfileAction(tenantId: string, input: z.input
   return runAction(async () => {
     await requireAdmin();
     const parsed = profileSchema.safeParse(input);
-    if (!parsed.success) throw new UserError("Formda hatalar var.", fieldErrors(parsed.error));
+    if (!parsed.success) throw new UserError("Formda hatalar var.", zodFieldErrors(parsed.error));
     const { name, ...rest } = parsed.data;
     await db.transaction(async (tx) => {
       await tx.update(organization).set({ name }).where(eq(organization.id, tenantId));
@@ -147,7 +148,7 @@ export async function addTenantUserAction(tenantId: string, input: z.input<typeo
   return runAction(async () => {
     await requireAdmin();
     const parsed = newUserSchema.safeParse(input);
-    if (!parsed.success) throw new UserError("Formda hatalar var.", fieldErrors(parsed.error));
+    if (!parsed.success) throw new UserError("Formda hatalar var.", zodFieldErrors(parsed.error));
     await db.transaction(async (tx) => {
       const profile = await tx.query.tenantProfile.findFirst({ where: eq(tenantProfile.tenantId, tenantId) });
       const members = await tx.query.member.findMany({ where: eq(member.organizationId, tenantId) });
@@ -180,13 +181,4 @@ export async function enterTenantAction(tenantId: string) {
       await tx.update(sessionTable).set({ activeOrganizationId: tenantId }).where(eq(sessionTable.id, s.session.id));
     });
   });
-}
-
-function fieldErrors(error: z.ZodError): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const issue of error.issues) {
-    const key = issue.path.join(".");
-    if (!out[key]) out[key] = issue.message;
-  }
-  return out;
 }

@@ -7,6 +7,7 @@ import {
   jsonb,
   pgTable,
   text,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import { documents } from "./documents";
@@ -75,5 +76,6 @@ export const automationRules = pgTable(
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index().on(t.tenantId, t.template)],
+  // Her şablondan şirket başına tek kural
+  (t) => [uniqueIndex().on(t.tenantId, t.template)],
 );

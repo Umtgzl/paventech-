@@ -19,8 +19,8 @@ import {
 import { calcLine, calcTotals } from "@/lib/documents/calc";
 import type { DocumentInput } from "@/lib/documents/input";
 import { DOC_TYPES, formatDocNumber, isDocTypeKey, stockAlreadyMovedBySource, type DocTypeKey } from "@/lib/documents/types";
-import { addDaysIso } from "@/lib/format";
-import { dec, parseDecimalInput, toMoneyString, toQtyString } from "@/lib/money";
+import { addDaysIso, formatMoney } from "@/lib/format";
+import { dec, parseDecimalInput, toMoneyString, toQtyString, type Decimal } from "@/lib/money";
 import { UserError } from "@/server/domain/errors";
 import { onStockChanged } from "@/server/domain/automation";
 import { averageCost } from "@/server/ledger/stock";
@@ -87,14 +87,25 @@ async function validateInput(exec: Executor, tenantId: string, input: DocumentIn
   }
 
   let cashAccountId: string | null = input.cashAccountId || null;
+  const targetCashAccountId: string | null = def.cashTransfer ? input.targetCashAccountId || null : null;
   if (def.cash !== 0) {
-    if (!cashAccountId) fe.cashAccountId = "Kasa / banka hesabı seçin.";
-    else {
-      const [a] = await exec
-        .select({ id: cashAccounts.id })
-        .from(cashAccounts)
-        .where(and(eq(cashAccounts.tenantId, tenantId), eq(cashAccounts.id, cashAccountId)));
-      if (!a) fe.cashAccountId = "Hesap bulunamadı.";
+    if (!cashAccountId) fe.cashAccountId = def.cashTransfer ? "Paranın çıkacağı hesabı seçin." : "Kasa / banka hesabı seçin.";
+    if (def.cashTransfer) {
+      if (!targetCashAccountId) fe.targetCashAccountId = "Paranın gireceği hesabı seçin.";
+      else if (targetCashAccountId === cashAccountId) fe.targetCashAccountId = "Hedef hesap, çıkış hesabından farklı olmalı.";
+    }
+    const ids = [cashAccountId, targetCashAccountId].filter((x): x is string => !!x);
+    if (ids.length) {
+      const found = new Set(
+        (
+          await exec
+            .select({ id: cashAccounts.id })
+            .from(cashAccounts)
+            .where(and(eq(cashAccounts.tenantId, tenantId), inArray(cashAccounts.id, ids)))
+        ).map((a) => a.id),
+      );
+      if (cashAccountId && !found.has(cashAccountId)) fe.cashAccountId = "Hesap bulunamadı.";
+      if (targetCashAccountId && !found.has(targetCashAccountId)) fe.targetCashAccountId = "Hesap bulunamadı.";
     }
   } else {
     cashAccountId = null;
@@ -156,7 +167,7 @@ async function validateInput(exec: Executor, tenantId: string, input: DocumentIn
   }
 
   if (Object.keys(fe).length > 0) throw new UserError("Lütfen işaretli alanları düzeltin.", fe);
-  return { def, partnerId, warehouseId, targetWarehouseId, cashAccountId, lines };
+  return { def, partnerId, warehouseId, targetWarehouseId, cashAccountId, targetCashAccountId, lines };
 }
 
 /** Taslak belgeyi oluşturur veya günceller; toplamlar sunucuda yeniden hesaplanır. */
@@ -178,6 +189,7 @@ export async function saveDraft(
     warehouseId: v.warehouseId,
     targetWarehouseId: v.targetWarehouseId,
     cashAccountId: v.cashAccountId,
+    targetCashAccountId: v.targetCashAccountId,
     currency: input.currency || "TRY",
     notes: input.notes?.trim() || null,
     subtotal: toMoneyString(totals.subtotal),
@@ -247,6 +259,30 @@ async function nextDocNumber(exec: Executor, tenantId: string, type: DocTypeKey,
   return formatDocNumber(DOC_TYPES[type].prefix, year, row.next - 1);
 }
 
+/**
+ * Kasa hesabı eksiye düşemez (fiziki para). Banka ve POS hesapları kontrol
+ * edilmez: KMH / bloke gibi durumlarda eksi bakiye gerçekten olabilir.
+ */
+async function assertCashAvailable(exec: Executor, tenantId: string, cashAccountId: string, amount: Decimal) {
+  // Hesap satırı kilitlenir: aynı kasadan eşzamanlı iki çıkış birbirini görmeden geçemez
+  const [acc] = await exec
+    .select({ name: cashAccounts.name, kind: cashAccounts.kind })
+    .from(cashAccounts)
+    .where(and(eq(cashAccounts.tenantId, tenantId), eq(cashAccounts.id, cashAccountId)))
+    .for("update");
+  if (!acc || acc.kind !== "kasa") return;
+  const [row] = await exec
+    .select({ balance: sql<string>`coalesce(sum(${cashMovements.amount}), 0)` })
+    .from(cashMovements)
+    .where(and(eq(cashMovements.tenantId, tenantId), eq(cashMovements.cashAccountId, cashAccountId)));
+  const balance = dec(row?.balance);
+  if (balance.lt(amount)) {
+    throw new UserError(
+      `${acc.name} bakiyesi yetersiz: kasada ${formatMoney(balance)} var, bu işlem için ${formatMoney(amount)} gerekiyor. Kasa eksiye düşemez.`,
+    );
+  }
+}
+
 async function lockDocument(exec: Executor, tenantId: string, id: string) {
   const [doc] = await exec
     .select()
@@ -274,6 +310,8 @@ export async function approveDocument(exec: Executor, tenantId: string, userId: 
   if (lines.length === 0) throw new UserError("Satırı olmayan belge onaylanamaz.");
   if (def.partner === "zorunlu" && !doc.partnerId) throw new UserError("Cari seçilmemiş.");
   if (def.cash !== 0 && !doc.cashAccountId) throw new UserError("Kasa / banka hesabı seçilmemiş.");
+  if (def.cashTransfer && !doc.targetCashAccountId) throw new UserError("Paranın gireceği hesap seçilmemiş.");
+  if (def.cash < 0 && doc.cashAccountId) await assertCashAvailable(exec, tenantId, doc.cashAccountId, dec(doc.grandTotal));
 
   const year = Number(doc.date.slice(0, 4));
   const number = await nextDocNumber(exec, tenantId, doc.type, year);
@@ -373,15 +411,14 @@ export async function approveDocument(exec: Executor, tenantId: string, userId: 
 
   // --- Kasa / banka ---
   if (def.cash !== 0 && doc.cashAccountId) {
-    await exec.insert(cashMovements).values({
-      tenantId,
-      cashAccountId: doc.cashAccountId,
-      documentId: id,
-      partnerId: doc.partnerId,
-      date: doc.date,
-      amount: toMoneyString(def.cash > 0 ? dec(doc.grandTotal) : dec(doc.grandTotal).neg()),
-      description: doc.notes ? `${desc} · ${doc.notes}` : desc,
-    });
+    const amount = dec(doc.grandTotal);
+    const text = doc.notes ? `${desc} · ${doc.notes}` : desc;
+    const base = { tenantId, documentId: id, partnerId: doc.partnerId, date: doc.date, description: text };
+    await exec.insert(cashMovements).values([
+      { ...base, cashAccountId: doc.cashAccountId, amount: toMoneyString(def.cash > 0 ? amount : amount.neg()) },
+      // Virman: aynı tutar hedef hesaba girer
+      ...(def.cashTransfer && doc.targetCashAccountId ? [{ ...base, cashAccountId: doc.targetCashAccountId, amount: toMoneyString(amount) }] : []),
+    ]);
   }
 
   await exec
@@ -401,11 +438,10 @@ export async function cancelDocument(exec: Executor, tenantId: string, id: strin
   const doc = await lockDocument(exec, tenantId, id);
   if (doc.status !== "onayli") throw new UserError("Yalnızca onaylı belgeler iptal edilebilir.");
 
-  const [stock, cari, cash] = await Promise.all([
-    exec.select().from(stockMovements).where(and(eq(stockMovements.tenantId, tenantId), eq(stockMovements.documentId, id))),
-    exec.select().from(partnerMovements).where(and(eq(partnerMovements.tenantId, tenantId), eq(partnerMovements.documentId, id))),
-    exec.select().from(cashMovements).where(and(eq(cashMovements.tenantId, tenantId), eq(cashMovements.documentId, id))),
-  ]);
+  // Transaction içinde tek bağlantı var; sorgular sırayla çalışmalı (paralel değil).
+  const stock = await exec.select().from(stockMovements).where(and(eq(stockMovements.tenantId, tenantId), eq(stockMovements.documentId, id)));
+  const cari = await exec.select().from(partnerMovements).where(and(eq(partnerMovements.tenantId, tenantId), eq(partnerMovements.documentId, id)));
+  const cash = await exec.select().from(cashMovements).where(and(eq(cashMovements.tenantId, tenantId), eq(cashMovements.documentId, id)));
   // Ters kayıt belgenin kendi tarihiyle atılır; dönem raporları iptalle birlikte sıfırlanır.
   const date = doc.date;
   const def = DOC_TYPES[doc.type];
@@ -439,6 +475,10 @@ export async function cancelDocument(exec: Executor, tenantId: string, id: strin
         description: desc,
       })),
     );
+  }
+  // Kasaya giren parayı geri almak (ör. tahsilat iptali) kasayı eksiye düşürmemeli
+  for (const m of cash) {
+    if (dec(m.amount).gt(0)) await assertCashAvailable(exec, tenantId, m.cashAccountId, dec(m.amount));
   }
   if (cash.length) {
     await exec.insert(cashMovements).values(

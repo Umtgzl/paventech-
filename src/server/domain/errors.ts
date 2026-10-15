@@ -11,3 +11,13 @@ export class UserError extends Error {
     this.name = "UserError";
   }
 }
+
+/** Zod doğrulama hatasını alan bazında ilk mesaja indirger (form altında gösterilir). */
+export function zodFieldErrors(error: { issues: { path: PropertyKey[]; message: string }[] }): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const issue of error.issues) {
+    const key = issue.path.map(String).join(".");
+    if (!out[key]) out[key] = issue.message;
+  }
+  return out;
+}

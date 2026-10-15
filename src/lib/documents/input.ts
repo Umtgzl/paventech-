@@ -19,6 +19,7 @@ export interface DocumentInput {
   warehouseId?: string | null;
   targetWarehouseId?: string | null;
   cashAccountId?: string | null;
+  targetCashAccountId?: string | null;
   currency?: string;
   notes?: string | null;
   sourceDocumentId?: string | null;

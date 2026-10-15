@@ -36,6 +36,8 @@ export const documents = pgTable(
     warehouseId: uuid().references(() => warehouses.id),
     targetWarehouseId: uuid().references(() => warehouses.id),
     cashAccountId: uuid().references(() => cashAccounts.id),
+    /** Virmanda paranın gittiği hesap */
+    targetCashAccountId: uuid().references(() => cashAccounts.id),
     currency: text().notNull().default("TRY"),
     subtotal: money(),
     discountTotal: money(),

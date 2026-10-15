@@ -126,6 +126,8 @@ export function EntityTable(props: EntityTableProps) {
     [def.fields],
   );
 
+  // TanStack Table v8 React Compiler ile memoize edilemez; derleyici bu bileşeni atlar (beklenen durum)
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: props.rows,
     columns,

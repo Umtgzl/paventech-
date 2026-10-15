@@ -12,6 +12,13 @@ describe("parseDecimalInput", () => {
   it("noktalı yazımı anlar", () => {
     expect(parseDecimalInput("1234.56")).toBe("1234.56");
     expect(parseDecimalInput("-3")).toBe("-3");
+    expect(parseDecimalInput("0.500")).toBe("0.500");
+    expect(parseDecimalInput("12.5")).toBe("12.5");
+  });
+  it("virgülsüz noktayı binlik ayırıcı olarak okur", () => {
+    expect(parseDecimalInput("1.500")).toBe("1500");
+    expect(parseDecimalInput("12.345.678")).toBe("12345678");
+    expect(parseDecimalInput("250.000")).toBe("250000");
   });
   it("geçersiz girdide null döner", () => {
     expect(parseDecimalInput("abc")).toBeNull();

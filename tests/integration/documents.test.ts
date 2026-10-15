@@ -283,3 +283,59 @@ describe("otomasyon: kritik stok", () => {
     expect(n[0].title).toContain("Ortopedik Yatak");
   });
 });
+
+describe("kasa ve virman", () => {
+  let kasa2: string;
+  let banka: string;
+  const balance = async (id: string) => (await cashBalances(db, t)).find((a) => a.id === id)!.balance;
+  const approved = async (input: Parameters<typeof saveDraft>[3]) => {
+    const id = await tx((x) => saveDraft(x, t, null, input));
+    await tx((x) => approveDocument(x, t, null, id));
+    return id;
+  };
+
+  beforeAll(async () => {
+    kasa2 = await entity("kasa-hesap", { name: "Şube Kasası", kind: "kasa" });
+    banka = await entity("kasa-hesap", { name: "Ticari Hesap", kind: "banka" });
+  });
+
+  it("kasa eksiye düşemez; banka hesabı (KMH) düşebilir", async () => {
+    const id = await tx((x) =>
+      saveDraft(x, t, null, { type: "tediye", date: "2026-10-12", partnerId: tedarikci, cashAccountId: kasa2, amount: "100", lines: [] }),
+    );
+    await expect(tx((x) => approveDocument(x, t, null, id))).rejects.toThrow(/eksiye düşemez/);
+    const [doc] = await db.select().from(documents).where(eq(documents.id, id));
+    expect(doc.status).toBe("taslak");
+    expect(doc.number).toBeNull();
+
+    await approved({ type: "tediye", date: "2026-10-12", partnerId: tedarikci, cashAccountId: banka, amount: "1.000", lines: [] });
+    expect(await balance(banka)).toBe("-1000.00");
+  });
+
+  it("virman parayı hesaplar arasında taşır; kasadaki para harcandıysa virman iptal edilemez", async () => {
+    const virman = await approved({ type: "virman", date: "2026-10-13", cashAccountId: banka, targetCashAccountId: kasa2, amount: "5000", lines: [] });
+    const [doc] = await db.select().from(documents).where(eq(documents.id, virman));
+    expect(doc.number).toBe("VRM2026000000001");
+    expect(await balance(banka)).toBe("-6000.00");
+    expect(await balance(kasa2)).toBe("5000.00");
+
+    const odeme = await approved({ type: "tediye", date: "2026-10-14", partnerId: tedarikci, cashAccountId: kasa2, amount: "3000", lines: [] });
+    expect(await balance(kasa2)).toBe("2000.00");
+    await expect(tx((x) => cancelDocument(x, t, virman))).rejects.toThrow(/yetersiz/);
+
+    await tx((x) => cancelDocument(x, t, odeme));
+    await tx((x) => cancelDocument(x, t, virman));
+    expect(await balance(kasa2)).toBe("0.00");
+    expect(await balance(banka)).toBe("-1000.00");
+  });
+
+  it("aynı hesaba virman reddedilir", async () => {
+    try {
+      await tx((x) => saveDraft(x, t, null, { type: "virman", date: "2026-10-13", cashAccountId: banka, targetCashAccountId: banka, amount: "10", lines: [] }));
+      throw new Error("hata bekleniyordu");
+    } catch (e) {
+      expect(e).toBeInstanceOf(UserError);
+      expect((e as UserError).fieldErrors!.targetCashAccountId).toBeDefined();
+    }
+  });
+});

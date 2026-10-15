@@ -60,7 +60,7 @@ export default suspensePage(async function DocumentDetailPage(props: PageProps<"
         title={
           <span className="flex flex-wrap items-center gap-2">
             {def.label}
-            <span className="font-mono text-base font-normal text-muted-foreground">{doc.number ?? "Taslak"}</span>
+            {doc.number && <span className="font-mono text-base font-normal text-muted-foreground">{doc.number}</span>}
             <DocStatusBadge status={doc.status} />
           </span>
         }
@@ -93,7 +93,8 @@ export default suspensePage(async function DocumentDetailPage(props: PageProps<"
               {def.hasDueDate && <Info label="Vade">{formatDate(doc.dueDate) || "Carinin vadesine göre"}</Info>}
               {d.warehouseName && <Info label={def.transfer ? "Çıkış deposu" : "Depo"}>{d.warehouseName}</Info>}
               {d.targetWarehouseName && <Info label="Giriş deposu">{d.targetWarehouseName}</Info>}
-              {d.cashAccountName && <Info label="Kasa / banka">{d.cashAccountName}</Info>}
+              {d.cashAccountName && <Info label={def.cashTransfer ? "Çıkış hesabı" : "Kasa / banka"}>{d.cashAccountName}</Info>}
+              {d.targetCashAccountName && <Info label="Giriş hesabı">{d.targetCashAccountName}</Info>}
               {doc.approvedAt && (
                 <Info label="Onay">
                   {formatDateTime(doc.approvedAt)}
@@ -150,7 +151,7 @@ export default suspensePage(async function DocumentDetailPage(props: PageProps<"
                         ) : (
                           <span className="font-medium">{l.description}</span>
                         )}
-                        {l.productCode && <span className="ml-2 text-xs text-muted-foreground">{l.productCode}</span>}
+                        {l.productCode && <span className="ml-2 text-xs whitespace-nowrap text-muted-foreground">{l.productCode}</span>}
                       </TableCell>
                       <TableCell className="num">
                         {formatQty(l.quantity)} <span className="text-xs text-muted-foreground">{l.unit}</span>
@@ -230,11 +231,15 @@ export default suspensePage(async function DocumentDetailPage(props: PageProps<"
                       Cari: {cari.map((m) => (dec(m.debit).gt(0) ? `borç ${formatMoney(m.debit)}` : `alacak ${formatMoney(m.credit)}`)).join(", ")}
                     </Effect>
                   )}
-                  {cash.length > 0 && doc.cashAccountId && (
-                    <Effect icon={<Landmark className="size-4" />} href={`/kasa-banka/${doc.cashAccountId}`}>
-                      Kasa: {cash.map((m) => formatMoney(m.amount)).join(", ")}
+                  {[...new Set(cash.map((m) => m.cashAccountId))].map((accountId) => (
+                    <Effect key={accountId} icon={<Landmark className="size-4" />} href={`/kasa-banka/${accountId}`}>
+                      {(accountId === doc.targetCashAccountId ? d.targetCashAccountName : d.cashAccountName) ?? "Kasa"}:{" "}
+                      {cash
+                        .filter((m) => m.cashAccountId === accountId)
+                        .map((m) => formatMoney(m.amount))
+                        .join(", ")}
                     </Effect>
-                  )}
+                  ))}
                 </>
               )}
             </CardContent>

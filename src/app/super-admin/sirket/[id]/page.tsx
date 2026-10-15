@@ -7,12 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/lib/format";
 import { MODULES, PLANS, type PlanKey } from "@/lib/modules";
+import { ROLE_LABEL } from "@/lib/roles";
 import { db } from "@/server/db";
 import { member, organization, tenantModule, tenantProfile, user } from "@/server/db/schema";
 import { requireSuperAdmin } from "@/server/session";
 import { AddUserForm, EnterTenantButton, ModuleSwitches, PlanPicker, ProfileForm } from "./tenant-admin-forms";
-
-const ROLE_LABEL: Record<string, string> = { owner: "Sahip", admin: "Yönetici", member: "Kullanıcı" };
 
 export default suspensePage(async function TenantAdminPage(props: PageProps<"/super-admin/sirket/[id]">) {
   await requireSuperAdmin();

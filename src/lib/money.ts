@@ -47,8 +47,8 @@ export function sumDec(values: NumericInput[]): Decimal {
 }
 
 /**
- * Kullanıcının yazdığı sayıyı normalize eder. Türkçe yazım ("1.234,56") ve
- * noktalı yazım ("1234.56") ikisi de kabul edilir. Geçersizse null döner.
+ * Kullanıcının yazdığı sayıyı normalize eder. Türkçe yazım ("1.234,56", "1.500")
+ * ve noktalı yazım ("1234.56", "0.5") ikisi de kabul edilir. Geçersizse null döner.
  */
 export function parseDecimalInput(raw: string | number | null | undefined): string | null {
   if (raw === null || raw === undefined) return null;
@@ -58,6 +58,9 @@ export function parseDecimalInput(raw: string | number | null | undefined): stri
   if (s.includes(",")) {
     // Türkçe: nokta binlik ayırıcı, virgül ondalık
     s = s.replaceAll(".", "").replace(",", ".");
+  } else if (/^-?[1-9]\d{0,2}(\.\d{3})+$/.test(s)) {
+    // Virgülsüz "1.500" veya "12.345.678": Türkçede binlik ayırıcıdır (1,5 değil)
+    s = s.replaceAll(".", "");
   }
   if (!/^-?\d+(\.\d+)?$/.test(s)) return null;
   return s;

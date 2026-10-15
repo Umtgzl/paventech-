@@ -67,6 +67,7 @@ export async function listDocuments(
 }
 
 const targetWarehouse = alias(warehouses, "target_warehouse");
+const targetCash = alias(cashAccounts, "target_cash");
 const approver = alias(user, "approver");
 
 export async function getDocument(exec: Executor, tenantId: string, id: string) {
@@ -82,6 +83,7 @@ export async function getDocument(exec: Executor, tenantId: string, id: string) 
       warehouseName: warehouses.name,
       targetWarehouseName: targetWarehouse.name,
       cashAccountName: cashAccounts.name,
+      targetCashAccountName: targetCash.name,
       approverName: approver.name,
     })
     .from(documents)
@@ -89,6 +91,7 @@ export async function getDocument(exec: Executor, tenantId: string, id: string) 
     .leftJoin(warehouses, eq(warehouses.id, documents.warehouseId))
     .leftJoin(targetWarehouse, eq(targetWarehouse.id, documents.targetWarehouseId))
     .leftJoin(cashAccounts, eq(cashAccounts.id, documents.cashAccountId))
+    .leftJoin(targetCash, eq(targetCash.id, documents.targetCashAccountId))
     .leftJoin(approver, eq(approver.id, documents.approvedBy))
     .where(and(eq(documents.tenantId, tenantId), eq(documents.id, id)));
   if (!doc) return null;

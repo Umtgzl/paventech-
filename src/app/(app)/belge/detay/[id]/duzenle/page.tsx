@@ -47,6 +47,7 @@ export default suspensePage(async function EditDocumentPage(props: PageProps<"/b
           warehouseId: doc.warehouseId,
           targetWarehouseId: doc.targetWarehouseId,
           cashAccountId: doc.cashAccountId,
+          targetCashAccountId: doc.targetCashAccountId,
           notes: doc.notes,
           sourceDocumentId: doc.sourceDocumentId,
           amount: def.lines === "yok" ? doc.grandTotal : null,

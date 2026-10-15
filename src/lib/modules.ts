@@ -117,6 +117,7 @@ export const MODULES: ModuleDef[] = [
       { label: "Hesaplar", href: "/kasa-banka" },
       { label: "Tahsilatlar", href: "/belge/tahsilat" },
       { label: "Ödemeler", href: "/belge/odeme" },
+      { label: "Virmanlar", href: "/belge/virman" },
     ],
   },
   {
@@ -196,7 +197,7 @@ export const MODULES: ModuleDef[] = [
     short: "Üretim",
     group: "uretim",
     tier: "standart",
-    depth: "temel",
+    depth: "cekirdek",
     icon: "factory",
     description: "Ürün reçeteleri (BOM), iş emirleri ve hammadde sarfiyatı.",
     features: ["Reçete", "İş emri", "Hammadde düşümü"],

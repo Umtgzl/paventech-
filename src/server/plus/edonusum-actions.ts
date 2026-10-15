@@ -2,7 +2,6 @@
 
 import { and, eq } from "drizzle-orm";
 import { refresh } from "next/cache";
-import { db } from "@/server/db";
 import { documents } from "@/server/db/schema";
 import { runAction } from "@/server/actions";
 import { assertModule, UserError } from "@/server/session";

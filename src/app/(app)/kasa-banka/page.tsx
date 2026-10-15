@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CreditCard, HandCoins, Landmark, Wallet } from "lucide-react";
+import { ArrowLeftRight, CreditCard, HandCoins, Landmark, Wallet } from "lucide-react";
 import { NewEntityButton } from "@/components/entity/edit-entity-button";
 import { PageHeader } from "@/components/page/page-header";
 import { StatCard } from "@/components/page/stat-card";
@@ -25,16 +25,21 @@ export default suspensePage(async function CashPage() {
   const ctx = await requireModule("kasa");
   const accounts = await cashBalances(db, ctx.tenantId);
   const total = sumDec(accounts.map((a) => a.balance));
-  const byKind = (k: string) => sumDec(accounts.filter((a) => a.kind === k).map((a) => a.balance));
+  const byKind = (...kinds: string[]) => sumDec(accounts.filter((a) => kinds.includes(a.kind)).map((a) => a.balance));
 
   return (
     <>
       <PageHeader
         breadcrumbs={[{ label: "Kasa & Banka" }, { label: "Hesaplar" }]}
         title="Kasa ve Banka Hesapları"
-        description="Bakiyeler tahsilat, ödeme ve masraf fişlerinden anlık hesaplanır."
+        description="Bakiyeler tahsilat, ödeme, masraf ve virman fişlerinden anlık hesaplanır."
         actions={
           <>
+            <Button variant="outline" asChild>
+              <Link href="/belge/virman/yeni">
+                <ArrowLeftRight /> Virman
+              </Link>
+            </Button>
             <Button variant="outline" asChild>
               <Link href="/belge/odeme/yeni">Ödeme yap</Link>
             </Button>
@@ -50,7 +55,7 @@ export default suspensePage(async function CashPage() {
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
         <StatCard label="Toplam nakit varlık" value={formatMoney(total)} tone={total.lt(0) ? "danger" : "default"} />
         <StatCard label="Kasalar" value={formatMoney(byKind("kasa"))} />
-        <StatCard label="Bankalar" value={formatMoney(byKind("banka"))} />
+        <StatCard label="Banka, POS ve kart" value={formatMoney(byKind("banka", "pos", "kredi_karti"))} />
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {accounts.map((a) => {

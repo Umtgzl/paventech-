@@ -16,7 +16,8 @@ export type DocTypeKey =
   | "depo_transfer"
   | "tahsilat"
   | "tediye"
-  | "masraf";
+  | "masraf"
+  | "virman";
 
 export type PartnerRole = "musteri" | "tedarikci" | "hepsi";
 
@@ -43,6 +44,8 @@ export interface DocTypeDef {
   partnerEffect: "borc" | "alacak" | null;
   /** Kasa/banka etkisi: +1 giriş, -1 çıkış */
   cash: -1 | 0 | 1;
+  /** Hesaplar arası para transferi (virman): kaynak hesaptan çıkar, hedef hesaba girer */
+  cashTransfer?: boolean;
   /** Vade tarihi alanı gösterilsin mi */
   hasDueDate: boolean;
   /** Hangi türlere dönüştürülebilir (ör. teklif -> sipariş) */
@@ -273,6 +276,24 @@ export const DOC_TYPES: Record<DocTypeKey, DocTypeDef> = {
     stock: 0,
     partnerEffect: null,
     cash: -1,
+    hasDueDate: false,
+    convertsTo: [],
+  },
+  virman: {
+    key: "virman",
+    slug: "virman",
+    label: "Virman",
+    plural: "Virmanlar",
+    module: "kasa",
+    prefix: "VRM",
+    partner: "yok",
+    partnerRole: "hepsi",
+    lines: "yok",
+    priced: true,
+    stock: 0,
+    partnerEffect: null,
+    cash: -1,
+    cashTransfer: true,
     hasDueDate: false,
     convertsTo: [],
   },

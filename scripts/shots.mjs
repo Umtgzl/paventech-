@@ -11,7 +11,9 @@ const exe = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 fs.mkdirSync(out, { recursive: true });
 
 const browser = await chromium.launch(fs.existsSync(exe) ? { executablePath: exe } : {});
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+// SHOT_WIDTH=390 ile telefon görünümü
+const width = Number(process.env.SHOT_WIDTH ?? 1440);
+const page = await browser.newPage({ viewport: { width, height: width < 768 ? 844 : 900 }, locale: "tr-TR" });
 const problems = [];
 page.on("pageerror", (e) => problems.push(`[${page.url()}] pageerror: ${e.message}`));
 page.on("console", (m) => {

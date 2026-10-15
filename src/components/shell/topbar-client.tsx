@@ -85,7 +85,7 @@ export function TopbarClient(props: Props) {
       {/* Şirket seçici */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-9 max-w-[16rem] gap-2 px-2" disabled={pending}>
+          <Button variant="ghost" className="h-9 min-w-0 max-w-[16rem] shrink gap-2 px-2" disabled={pending}>
             <Building2 className="size-4 text-muted-foreground" />
             <span className="truncate font-medium">{props.tenantName}</span>
             {props.memberships.length > 1 && <ChevronDown className="size-3.5 text-muted-foreground" />}

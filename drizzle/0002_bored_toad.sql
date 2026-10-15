@@ -1,0 +1,2 @@
+DROP INDEX "automation_rules_tenant_id_template_index";--> statement-breakpoint
+CREATE UNIQUE INDEX "automation_rules_tenant_id_template_index" ON "automation_rules" USING btree ("tenant_id","template");

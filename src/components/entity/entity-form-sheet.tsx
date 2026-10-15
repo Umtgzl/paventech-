@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { Field } from "@/components/page/field";
 import {
@@ -76,14 +76,17 @@ export function EntityFormSheet({
   const { pending, run, fieldErrors, setFieldErrors } = useAction();
   const del = useAction();
 
-  useEffect(() => {
-    if (open) {
+  // Panel her açıldığında formu seçilen kayda göre sıfırla (efekt yerine render sırasında:
+  // eski değerler bir an bile görünmez)
+  const openKey = open ? (row?.id ?? "yeni") : null;
+  const [shownKey, setShownKey] = useState(openKey);
+  if (openKey !== shownKey) {
+    setShownKey(openKey);
+    if (openKey !== null) {
       setValues(initialValues(def, row));
       setFieldErrors({});
     }
-    // Panel her açıldığında formu seçilen kayda göre sıfırla
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, row?.id]);
+  }
 
   const set = (name: string, v: string | boolean) => setValues((p) => ({ ...p, [name]: v }));
   const detail = row ? entityDetailHref(def, row.id) : null;
