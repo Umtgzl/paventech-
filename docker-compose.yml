@@ -1,0 +1,17 @@
+# Yerel geliştirme için PostgreSQL. Çalıştırmak için: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: paventech
+      POSTGRES_PASSWORD: paventech
+      POSTGRES_DB: paventech_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/docker-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  pgdata:
