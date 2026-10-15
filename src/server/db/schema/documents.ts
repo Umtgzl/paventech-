@@ -16,6 +16,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { cashAccounts, partners, products, warehouses } from "./master";
+import { productionOrders } from "./modules";
 import { createdAt, money, pk, qty, rate, tenantRef, updatedAt } from "./columns";
 
 export const documents = pgTable(
@@ -97,6 +98,8 @@ export const stockMovements = pgTable(
       .references(() => warehouses.id),
     documentId: uuid().references(() => documents.id),
     documentLineId: uuid(),
+    /** Üretimden doğan hareketlerde iş emri */
+    productionOrderId: uuid().references((): AnyPgColumn => productionOrders.id),
     date: date({ mode: "string" }).notNull(),
     quantity: qty(),
     /** Birim maliyet (giriş: alış fiyatı, çıkış: o anki ortalama maliyet) */

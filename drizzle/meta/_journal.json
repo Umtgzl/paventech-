@@ -8,6 +8,13 @@
       "when": 1792056092217,
       "tag": "0000_fast_jubilee",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792058656761,
+      "tag": "0001_abnormal_brother_voodoo",
+      "breakpoints": true
     }
   ]
 }

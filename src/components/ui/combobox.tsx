@@ -25,6 +25,7 @@ export function Combobox({
   invalid,
   disabled,
   className,
+  triggerProps,
 }: {
   id?: string;
   value: string | null;
@@ -36,6 +37,8 @@ export function Combobox({
   invalid?: boolean;
   disabled?: boolean;
   className?: string;
+  /** Tetikleyici butona ek öznitelikler (ör. data-first: klavye ile odaklanma) */
+  triggerProps?: Record<string, string | boolean>;
 }) {
   const [open, setOpen] = useState(false);
   const selected = options.find((o) => o.value === value);
@@ -51,6 +54,7 @@ export function Combobox({
           aria-expanded={open}
           aria-invalid={invalid}
           disabled={disabled}
+          {...triggerProps}
           className={cn(
             "h-9 w-full justify-between px-3 font-normal aria-invalid:border-destructive",
             !selected && "text-muted-foreground",

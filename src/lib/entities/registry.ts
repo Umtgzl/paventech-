@@ -170,6 +170,7 @@ export const ENTITIES: Record<EntityKey, EntityDef> = {
     label: "İş Emri",
     plural: "İş Emirleri",
     href: "/kayit/is-emri",
+    detailHref: "/uretim/is-emirleri/{id}",
     titleField: "code",
     code: { field: "code", prefix: "IE", digits: 5 },
     searchFields: ["code", "notes"],
