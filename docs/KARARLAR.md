@@ -192,6 +192,8 @@ Proxy arkasındaki bu senaryo yerelde HTTPS ters proxy ile benzetilip test edild
 - düzeltme olmadan giriş reddedildi;
 - düzeltmeyle giriş, Server Action ve belge onayı hem üretim hem geliştirme modunda çalıştı.
 
+**Değişti (2026-11-09).** İlk sürümde uygulama ve PostgreSQL iki ayrı konteynerdeydi (docker compose, ortak ağ). Gerçek Codespaces'te GitHub'ın port köprüsü bu yapıda uygulamaya ulaşamadı (dışarıdan 502, içeride uygulama 307 ile sağlıklı). PostgreSQL artık uygulamayla aynı konteynerde çalışıyor (Debian paketi). Uygulama, arka planda başlatılan süreçler tutunmadığı için bir terminalde çalışıyor.
+
 **Bedeli.** Codespaces kişisel hesapta aylık kotayla ücretsiz; yoğun kullanımda ücretli. Kalıcı ve herkese açık demo adresi için ayrıca barındırma gerekir (bkz. K10).
 
 ---

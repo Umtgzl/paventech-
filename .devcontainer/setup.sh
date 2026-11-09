@@ -23,13 +23,18 @@ if [ -n "${CODESPACE_NAME:-}" ] && [ -n "${GITHUB_CODESPACES_PORT_FORWARDING_DOM
   echo "    Uygulama adresi: ${url}"
 fi
 
-echo "==> Veritabanı bekleniyor"
-for i in $(seq 1 60); do
-  if node -e "const {Client}=require('pg');const c=new Client({connectionString:'postgres://paventech:paventech@localhost:5432/paventech_dev'});c.connect().then(()=>c.end()).then(()=>process.exit(0),()=>process.exit(1))"; then
-    break
-  fi
-  [ "$i" = 60 ] && { echo "Veritabanına bağlanılamadı"; exit 1; }
-  sleep 2
+echo "==> PostgreSQL kuruluyor"
+if [ ! -d /etc/postgresql ]; then
+  sudo apt-get update -qq
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq postgresql > /dev/null
+fi
+sudo service postgresql start
+psql_admin() { sudo -u postgres psql -v ON_ERROR_STOP=1 -tAc "$1"; }
+[ "$(psql_admin "SELECT 1 FROM pg_roles WHERE rolname='paventech'")" = 1 ] \
+  || psql_admin "CREATE ROLE paventech LOGIN PASSWORD 'paventech' CREATEDB"
+for db in paventech_dev paventech_test; do
+  [ "$(psql_admin "SELECT 1 FROM pg_database WHERE datname='$db'")" = 1 ] \
+    || psql_admin "CREATE DATABASE $db OWNER paventech"
 done
 
 echo "==> Tablolar kuruluyor, demo veri yükleniyor"

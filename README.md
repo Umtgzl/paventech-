@@ -137,7 +137,7 @@ src/
                   oturum ve yetki, Server Action'lar, demo veri
 tests/            Entegrasyon testleri (gerçek PostgreSQL ile)
 drizzle/          Veritabanı göçleri (elle değiştirilmez, pnpm db:generate üretir)
-.devcontainer/    GitHub Codespaces ortamı: Node 22 + PostgreSQL 16, ilk kurulum ve başlatma
+.devcontainer/    GitHub Codespaces ortamı: tek konteynerde Node 22 + PostgreSQL, ilk kurulum ve başlatma
 docs/KARARLAR.md  Mimari ve ürün kararları
 ```
 
