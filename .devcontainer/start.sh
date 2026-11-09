@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Codespace her başladığında uygulamayı arka planda çalıştırır. Çıktı: /tmp/paventech.log
-# Elle durdurup başlatmak için: pkill -f "next start" ; bash .devcontainer/start.sh
+# Codespace'e her bağlanıldığında uygulamayı bir terminalde çalıştırır (postAttachCommand).
+# Terminal açık kaldıkça uygulama çalışır. Durdurmak için o terminalde Ctrl+C.
 cd "$(dirname "$0")/.."
 
-# Zaten çalışıyorsa dokunma
+# Zaten çalışıyorsa (ör. ikinci bir sekmeden bağlanıldıysa) dokunma
 if curl -s -o /dev/null --max-time 2 http://localhost:3000/giris; then
+  echo "Paventech ERP zaten çalışıyor: Bağlantı Noktaları (PORTS) sekmesinde 3000."
   exit 0
 fi
-# İlk kurulum henüz bitmediyse (setup.sh derlemeyi yapacak) bekleme
-[ -f .env ] || exit 0
-[ -f .next/BUILD_ID ] || pnpm build >> /tmp/paventech.log 2>&1
+# İlk kurulum yarıda kaldıysa derlemeyi tamamla
+[ -f .next/BUILD_ID ] || pnpm build
 
-setsid nohup pnpm start > /tmp/paventech.log 2>&1 < /dev/null &
-echo "Paventech ERP başlatıldı: 3000 portu (log: /tmp/paventech.log)"
+echo "Paventech ERP başlıyor: Bağlantı Noktaları (PORTS) sekmesinde 3000 portunu açın."
+exec pnpm start

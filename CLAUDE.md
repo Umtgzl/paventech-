@@ -20,7 +20,7 @@ pnpm db:reset     # geliştirme veritabanını baştan kurar + demo veri
 Bir değişikliği bitirmeden önce: `pnpm typecheck && pnpm lint && pnpm test`.
 
 **GitHub Codespaces:** `.devcontainer/` dizini.
-- `setup.sh` ilk kurulumu yapar, `start.sh` uygulamayı arka planda başlatır (log: `/tmp/paventech.log`).
+- `setup.sh` ilk kurulumu yapar; `start.sh` her bağlanışta uygulamayı bir terminalde başlatır (arka planda başlatılan süreçler Codespaces'te tutunmuyor).
 - Uygulama proxy arkasından açıldığı için `.env`'deki `BETTER_AUTH_URL` gerçek genel adres olmalıdır. `next.config.ts` Server Action izin listesini bu adresten üretir.
 
 ## Mimari

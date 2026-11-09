@@ -33,7 +33,8 @@ Bilinmesi gerekenler:
 - **Kullanılmayan codespace durur.** 30 dakika boyunca kullanılmazsa durur; veriler kaybolmaz. Tekrar açmak için [github.com/codespaces](https://github.com/codespaces) sayfasında codespace'in adına tıklayın. Uygulama kendiliğinden yeniden başlar.
 - **Ücretsiz kota.** Kişisel GitHub hesaplarında aylık ücretsiz kullanım kotası var. İşiniz bitince aynı sayfadan **Stop codespace** diyebilirsiniz.
 - **Demo veriyi baştan yüklemek** için terminalde `pnpm db:reset` çalıştırın.
-- **Kod değiştirip anında görmek** için terminalde önce `pkill -f next-server` ile arka plandaki demo sunucusunu durdurun, sonra `pnpm dev` çalıştırın.
+- **Kod değiştirip anında görmek** için uygulamanın çalıştığı terminalde `Ctrl+C` ile durdurun, sonra `pnpm dev` çalıştırın.
+- **Sayfa "HTTP ERROR 401" verirse:** GitHub portu özel tutuyor. **Bağlantı Noktaları (PORTS)** sekmesinde 3000 satırına sağ tıklayın → **Bağlantı Noktası Görünürlüğü → Genel** seçin, sayfayı yenileyin. (Bu, adresi bilen herkesin giriş sayfasını görebilmesi demek; demo veri kurgusal olduğu için sorun değil, işiniz bitince **Özel**'e geri alabilirsiniz.)
 
 ### B) Kendi bilgisayarında
 
