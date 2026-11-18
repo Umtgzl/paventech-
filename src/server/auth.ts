@@ -12,10 +12,22 @@ import * as schema from "@/server/db/schema";
  * - admin eklentisi: user.role = "admin" olan kullanıcı Paventech süper yöneticisidir.
  * - Dışarıdan kayıt kapalı: kullanıcıları Super Admin veya şirket yöneticisi açar.
  */
+/**
+ * Girişin kabul edileceği ek adresler. Uygulama bir proxy arkasından başka bir
+ * adresle açılıyorsa (ör. GitHub Codespaces: https://<ad>-3000.app.github.dev)
+ * BETTER_AUTH_URL yanlış kalsa bile giriş "Invalid origin" ile reddedilmesin.
+ * TRUSTED_ORIGINS: virgülle ayrılmış adresler veya kalıplar (https://*.ornek.com).
+ */
+const trustedOrigins = [
+  ...(process.env.TRUSTED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+  ...(process.env.CODESPACES === "true" ? ["https://*.app.github.dev"] : []),
+];
+
 export const auth = betterAuth({
   appName: "Paventech ERP",
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
+  trustedOrigins,
   database: drizzleAdapter(db, { provider: "pg", schema }),
   emailAndPassword: {
     enabled: true,

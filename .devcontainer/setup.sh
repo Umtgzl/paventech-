@@ -42,5 +42,6 @@ pnpm db:reset
 
 echo "==> Uygulama derleniyor (1-3 dk)"
 pnpm build
+git rev-parse HEAD > .next/paventech-commit 2>/dev/null || true
 
 echo "==> Hazır. Uygulama birazdan 3000 portunda açılacak (PORTS sekmesi)."

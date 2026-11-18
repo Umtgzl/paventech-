@@ -6,6 +6,10 @@ import type { NextConfig } from "next";
 // Adres .env'deki BETTER_AUTH_URL'den okunur (Next, .env'i bu dosyadan önce yükler).
 const publicUrl = process.env.BETTER_AUTH_URL ? new URL(process.env.BETTER_AUTH_URL) : null;
 const proxied = publicUrl && !["localhost", "127.0.0.1"].includes(publicUrl.hostname) ? publicUrl : null;
+// Codespaces içinde adres ayarı tutmasa bile tüm codespace adreslerine izin ver
+const codespaces = process.env.CODESPACES === "true";
+const extraHosts = [...(proxied ? [proxied.host] : []), ...(codespaces ? ["*.app.github.dev"] : [])];
+const extraHostnames = [...(proxied ? [proxied.hostname] : []), ...(codespaces ? ["*.app.github.dev"] : [])];
 
 const nextConfig: NextConfig = {
   // Next.js 16 varsayılanları: sayfalar statik bir kabukla açılır, veriye bağlı
@@ -22,9 +26,9 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  ...(proxied && {
-    allowedDevOrigins: [proxied.hostname],
-    experimental: { serverActions: { allowedOrigins: [proxied.host] } },
+  ...(extraHosts.length > 0 && {
+    allowedDevOrigins: extraHostnames,
+    experimental: { serverActions: { allowedOrigins: extraHosts } },
   }),
 };
 

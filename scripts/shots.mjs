@@ -7,7 +7,7 @@ import fs from "node:fs";
 const [, , out, ...paths] = process.argv;
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const EMAIL = process.env.SHOT_EMAIL ?? "demo@paventech.local";
-const exe = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
+const exe = "/opt/pw-browsers/chromium";
 fs.mkdirSync(out, { recursive: true });
 
 const browser = await chromium.launch(fs.existsSync(exe) ? { executablePath: exe } : {});

@@ -23,6 +23,14 @@ if [ -n "$name" ] && [ -n "$domain" ] && [ -f .env ]; then
   fi
 fi
 
+# Kod güncellendiyse (git pull) eski derleme kullanılmasın
+head=$(git rev-parse HEAD 2>/dev/null || echo bilinmiyor)
+if [ -f .next/BUILD_ID ] && [ "$(cat .next/paventech-commit 2>/dev/null)" != "$head" ]; then
+  echo "Kod güncellenmiş, uygulama yeniden derlenecek."
+  pkill -f next-server 2>/dev/null && sleep 2
+  rm -f .next/BUILD_ID
+fi
+
 # Zaten çalışıyorsa (ör. ikinci bir sekmeden bağlanıldıysa) dokunma
 if curl -s -o /dev/null --max-time 2 http://localhost:3000/giris; then
   echo "Paventech ERP zaten çalışıyor: Bağlantı Noktaları (PORTS) sekmesinde 3000."
@@ -30,7 +38,7 @@ if curl -s -o /dev/null --max-time 2 http://localhost:3000/giris; then
 fi
 if [ ! -f .next/BUILD_ID ]; then
   echo "Uygulama derleniyor (1-3 dk)..."
-  pnpm build
+  pnpm build && echo "$head" > .next/paventech-commit
 fi
 
 echo "Paventech ERP başlıyor: Bağlantı Noktaları (PORTS) sekmesinde 3000 portunu açın."
