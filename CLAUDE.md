@@ -77,8 +77,12 @@ aktarımı otomatik üretir (`/kayit/[varlik]`). Basit kayıt ekranı için yeni
 buraya varlık ekleyin.
 
 **Plus modüller** (`src/server/plus`, `src/app/(app)/plus`) vitrindir: gerçek veriyle çalışır
-ama dış entegrasyon (entegratör, pazaryeri, dil modeli) bağlı değildir. Bunu ekranda "Prototip notu"
-ile dürüstçe belirtin.
+ama dış entegrasyon (entegratör, pazaryeri, dil modeli) bağlı değildir. Simüle edilen işlemi ekranda
+kısa ve nötr belirtin (ör. e-belge panelindeki "Test ortamı"; üst çubukta "Demo" etiketi).
+
+**Arayüz dili:** yapay zekâ üretimi gibi görünen kalıplardan kaçının: parıltı ikonları, mor vurgu,
+sayfanın kendini anlatan alt başlıkları, olmayan özellik için yer tutucu kart, "Yakında/Sıradaki adım"
+rozet kalabalığı, pazarlama cümleleri. Kısa etiketler, sade tablolar, tek marka rengi.
 
 ## Kod kuralları
 

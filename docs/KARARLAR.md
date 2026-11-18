@@ -122,7 +122,9 @@ Yeni karar en alta eklenir; eski karar değişirse silinmez, "Değişti" notuyla
 | Temel | Ortak motorla kayıt, liste, form, pano | Maliyet, Kalite, Demirbaş & Bakım, CRM, İK, Proje & Görev |
 | Vitrin | Gerçek veriyle önizleme, dış bağlantı yok | AI Asistan, e-Dönüşüm, B2B Portal, E-Ticaret, Otomasyon |
 
-**Neden.** Müşteriye ya da yatırımcıya ne gösterildiği konusunda dürüst olmak. Vitrin ekranların hepsinde "Prototip notu" var.
+**Neden.** Müşteriye ya da yatırımcıya ne gösterildiği konusunda dürüst olmak.
+
+**Değişti (2026-11-18).** Ekranlardaki "Prototip notu" kutuları ve derinlik rozetleri kaldırıldı; yapay zekâ üretimi gibi görünüyor ve ürünü yarım gösteriyordu. Dürüstlük artık üst çubuktaki küçük "Demo" etiketi, simüle edilen işlemin yanındaki kısa not ("Test ortamı") ve yatırımcıya verilen durum belgesiyle sağlanıyor.
 
 ## K9 — Plus modüllerin canlı sürüm yaklaşımı
 

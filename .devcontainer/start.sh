@@ -26,8 +26,11 @@ fi
 # Kod güncellendiyse (git pull) eski derleme kullanılmasın
 head=$(git rev-parse HEAD 2>/dev/null || echo bilinmiyor)
 if [ -f .next/BUILD_ID ] && [ "$(cat .next/paventech-commit 2>/dev/null)" != "$head" ]; then
-  echo "Kod güncellenmiş, uygulama yeniden derlenecek."
+  echo "Kod güncellenmiş, paketler kuruluyor ve uygulama yeniden derlenecek."
   pkill -f next-server 2>/dev/null && sleep 2
+  export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+  pnpm install --frozen-lockfile
+  pnpm db:migrate
   rm -f .next/BUILD_ID
 fi
 
