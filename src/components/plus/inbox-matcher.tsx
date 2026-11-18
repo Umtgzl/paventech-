@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-import { CheckCircle2, Loader2, Sparkles, XCircle } from "lucide-react";
+import { CheckCircle2, FilePlus2, Loader2, XCircle } from "lucide-react";
 import { Field } from "@/components/page/field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -81,10 +81,9 @@ export function InboxMatcher({
       </Card>
 
       <Card className="overflow-hidden py-0">
-        <div className="flex items-center gap-2 border-b bg-plus/[0.04] px-4 py-2.5 text-sm">
-          <Sparkles className="size-4 text-plus" />
+        <div className="flex items-center gap-2 border-b bg-muted/40 px-4 py-2.5 text-sm">
           <span>
-            {matchedCount} / {lines.length} satır stok kartına eşleşti. Gerekirse değiştirin; onayladığınız eşleşme bu tedarikçi için öğrenilir.
+            {matchedCount} / {lines.length} satır eşleşti. Onayladığınız eşleşmeler bu tedarikçinin sonraki faturalarında hazır gelir.
           </span>
         </div>
         <div className="overflow-x-auto">
@@ -197,7 +196,6 @@ export function InboxMatcher({
           <XCircle /> Reddet
         </Button>
         <Button
-          variant="plus"
           disabled={create.pending || !supplierId || matchedCount < lines.length}
           onClick={() =>
             create.run(() => processInboxAction(id, supplierId ?? "", chosen), {
@@ -205,7 +203,7 @@ export function InboxMatcher({
             })
           }
         >
-          {create.pending ? <Loader2 className="animate-spin" /> : <Sparkles />}
+          {create.pending ? <Loader2 className="animate-spin" /> : <FilePlus2 />}
           Alış faturası taslağı oluştur
         </Button>
       </div>

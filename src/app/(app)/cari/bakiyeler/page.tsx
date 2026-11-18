@@ -38,7 +38,6 @@ export default suspensePage(async function BalancesPage(props: PageProps<"/cari/
       <PageHeader
         breadcrumbs={[{ label: "Cari Hesaplar", href: "/cari" }, { label: "Bakiyeler" }]}
         title="Cari Bakiyeler"
-        description="Vadesi geçen tutar, tahsilatların en eski borçları kapattığı (FIFO) varsayımıyla hesaplanır."
       />
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
         <StatCard label="Toplam alacağımız" value={formatMoney(receivable)} tone="warning" hint="Müşterilerin bize borcu" />

@@ -24,8 +24,6 @@ export default suspensePage(async function InboxPage() {
       <PlusHeader
         module="e-Dönüşüm"
         title="Gelen e-Faturalar"
-        description="Tedarikçilerden gelen e-faturalar. Satırlar stok kartlarınızla otomatik eşleşir, alış faturası tek tıkla hazırlanır."
-        note="Gelen kutusu örnek e-faturalarla dolu. Canlı sürümde e-faturalar özel entegratörden otomatik çekilecek (UBL-TR XML)."
       />
       {items.length === 0 ? (
         <EmptyState title="Gelen e-fatura yok" />

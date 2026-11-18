@@ -80,9 +80,6 @@ function ModuleEntry({
     <>
       <ModuleIcon name={m.icon} className="size-4 shrink-0" />
       <span className="flex-1 truncate text-left">{m.name}</span>
-      {m.tier === "plus" && (
-        <span className="rounded bg-plus/12 px-1.5 py-px text-[10px] font-semibold text-plus">PLUS</span>
-      )}
     </>
   );
 

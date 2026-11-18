@@ -103,6 +103,11 @@ export function TopbarClient(props: Props) {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      {process.env.NEXT_PUBLIC_DEMO === "1" && (
+        <span className="hidden rounded border px-1.5 py-0.5 text-[11px] text-muted-foreground sm:inline" title="Kurgusal örnek veri">
+          Demo
+        </span>
+      )}
       <div className="flex-1" />
 
       <Button

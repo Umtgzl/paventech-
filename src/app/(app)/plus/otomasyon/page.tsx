@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { and, desc, eq } from "drizzle-orm";
-import { ArrowRight, BellRing, Zap } from "lucide-react";
 import { EmptyState } from "@/components/page/empty-state";
 import { suspensePage } from "@/components/page/suspense-page";
 import { PlusHeader } from "@/components/plus/plus-header";
 import { RuleSwitch } from "@/components/plus/rule-switch";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import { db } from "@/server/db";
 import { automationRules, notification } from "@/server/db/schema";
 import { AUTOMATION_TEMPLATES } from "@/server/domain/automation";
@@ -32,8 +30,6 @@ export default suspensePage(async function AutomationPage() {
       <PlusHeader
         module="Otomasyon"
         title="Otomasyon Kuralları"
-        description="“Şu olunca şunu yap” kuralları. Onaylanan belgeler ve stok hareketleri kuralları kendiliğinden tetikler."
-        note="Prototipte kritik stok kuralı gerçekten çalışır: stok kritik seviyeye inince bildirim zilinde uyarı çıkar. Diğer şablonlar canlı sürümde e-posta, SMS ve WhatsApp sağlayıcılarıyla devreye girecek."
       />
 
       <div className="grid gap-4 xl:grid-cols-[1fr_380px]">
@@ -42,16 +38,8 @@ export default suspensePage(async function AutomationPage() {
             const enabled = byTemplate.get(t.template)?.enabled ?? false;
             const lastRun = t.template === "kritik_stok" ? recent[0]?.createdAt : undefined;
             return (
-              <Card key={t.template} className={cn(!t.live && "bg-muted/30")}>
+              <Card key={t.template}>
                 <CardContent className="flex items-start gap-4">
-                  <div
-                    className={cn(
-                      "flex size-9 shrink-0 items-center justify-center rounded-lg",
-                      t.live ? "bg-plus/10 text-plus" : "bg-muted text-muted-foreground",
-                    )}
-                  >
-                    <Zap className="size-4" />
-                  </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium">{t.name}</span>
@@ -79,27 +67,12 @@ export default suspensePage(async function AutomationPage() {
             );
           })}
 
-          <Card className="border-dashed">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Kendi kuralınızı kurun <Badge variant="muted">Sıradaki adım</Badge>
-              </CardTitle>
-              <CardDescription>Olay, şart ve aksiyonu seçerek kural yazılır; kod gerekmez.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="rounded-md border bg-card px-2.5 py-1">Satış faturası onaylandığında</span>
-              <ArrowRight className="size-4 text-muted-foreground" />
-              <span className="rounded-md border bg-card px-2.5 py-1">tutar 100.000 ₺ üstündeyse</span>
-              <ArrowRight className="size-4 text-muted-foreground" />
-              <span className="rounded-md border bg-card px-2.5 py-1">yöneticiye bildirim gönder</span>
-            </CardContent>
-          </Card>
         </div>
 
         <Card className="h-fit">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BellRing className="size-4 text-plus" /> Kuralların ürettiği son bildirimler
+              Son bildirimler
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-3">

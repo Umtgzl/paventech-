@@ -30,7 +30,6 @@ export default suspensePage(async function NewDocumentPage(props: PageProps<"/be
           { label: "Yeni" },
         ]}
         title={`Yeni ${def.label.toLocaleLowerCase("tr-TR")}`}
-        description="Numara onay anında verilir. Taslak kaydedip daha sonra onaylayabilirsiniz."
       />
       <DocumentForm
         def={def}

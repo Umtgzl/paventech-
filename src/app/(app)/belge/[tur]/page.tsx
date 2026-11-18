@@ -39,11 +39,6 @@ export default suspensePage(async function DocumentListPage(props: PageProps<"/b
       <PageHeader
         breadcrumbs={[{ label: MODULE_MAP[def.module].short }, { label: def.plural }]}
         title={def.plural}
-        description={
-          def.stock !== 0 || def.partnerEffect || def.cash !== 0
-            ? "Onaylanan belgeler stok, cari ve kasa hareketlerini otomatik oluşturur."
-            : "Bu belge stoğa ve cariye dokunmaz; onaylanınca bir sonraki belgeye dönüştürülebilir."
-        }
         actions={
           <Button asChild>
             <Link href={`/belge/${def.slug}/yeni`}>

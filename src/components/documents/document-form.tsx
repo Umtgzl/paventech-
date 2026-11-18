@@ -467,7 +467,7 @@ export function DocumentForm({ def, data, today, initial, documentId }: Document
             <Button type="button" variant="ghost" size="sm" onClick={() => addLine()}>
               <Plus /> Satır ekle
             </Button>
-            <span className="text-xs text-muted-foreground">İpucu: son satırda Enter&apos;a basınca yeni satır açılır.</span>
+
           </div>
         </Card>
       )}

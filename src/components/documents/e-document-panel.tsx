@@ -37,7 +37,7 @@ export function EDocumentPanel({ documentId, status, kind }: { documentId: strin
           </Button>
         )}
         <p className="text-xs text-muted-foreground">
-          Prototip: gönderim simüle edilir. Canlıda UBL-TR XML üretilip özel entegratör API&apos;si üzerinden GİB&apos;e iletilecek.
+          Test ortamı: belge GİB&apos;e iletilmez.
         </p>
       </CardContent>
     </Card>

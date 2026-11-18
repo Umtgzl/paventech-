@@ -54,8 +54,6 @@ export default suspensePage(async function B2bPage(props: PageProps<"/plus/b2b">
       <PlusHeader
         module="B2B Portal"
         title="B2B Bayi Portalı"
-        description="Bayilerinizin kendi şifreleriyle girip ekstre gördüğü ve sipariş verdiği portal. Aşağıda seçtiğiniz bayinin gözünden önizleme var."
-        note="Önizleme ana uygulamanın içinde çalışır. Canlı sürümde bayiler ayrı bir adresten (bayi.sirketiniz.com) kendi kullanıcılarıyla girecek; fiyat listesi ve iskontolar bayiye özel tanımlanacak."
         actions={<DealerSelect dealers={dealers.map((d) => ({ value: d.id, label: `${d.name}${d.city ? ` · ${d.city}` : ""}` }))} value={selected.id} />}
       />
       <PortalPreview

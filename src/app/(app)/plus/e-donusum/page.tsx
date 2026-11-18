@@ -40,8 +40,6 @@ export default suspensePage(async function OutgoingEDocsPage() {
       <PlusHeader
         module="e-Dönüşüm"
         title="Giden e-Belgeler"
-        description="Onaylı satış faturaları ve irsaliyelerin e-Fatura / e-Arşiv / e-İrsaliye durumu."
-        note="Gönderim simüle edilir. Canlı sürümde belge UBL-TR XML olarak üretilip seçilen özel entegratörün API'si üzerinden GİB'e iletilecek; alıcının e-Fatura mükellefiyeti otomatik sorgulanıp e-Fatura veya e-Arşiv seçilecek."
         actions={
           <Button variant="outline" asChild>
             <Link href="/plus/e-donusum/gelen">

@@ -27,7 +27,7 @@ export default suspensePage(async function CostingPage() {
       <PageHeader
         breadcrumbs={[{ label: "Maliyet" }, { label: "Ürün Maliyetleri" }]}
         title="Ürün Maliyetleri"
-        description="Birim maliyet = reçetedeki bileşenlerin güncel ortalama maliyeti × miktar × (1 + fire). İşçilik ve genel gider payı bir sonraki aşamada eklenecek."
+        description="Reçete bileşenlerinin güncel ortalama maliyetiyle, fire dahil. İşçilik ve genel gider hariç."
       />
       {costs.length === 0 ? (
         <EmptyState title="Reçete yok" description="Üretim > Reçeteler'den mamuller için reçete tanımlayın." />

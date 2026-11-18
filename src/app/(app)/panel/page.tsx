@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { count, eq, and } from "drizzle-orm";
-import { AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight, Factory, FileText, HandCoins, Inbox, Plus, ShoppingCart, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight, Factory, FileText, HandCoins, Inbox, Plus, ShoppingCart } from "lucide-react";
 import { MonthlyChart } from "@/components/dashboard/monthly-chart";
 import { TopProducts } from "@/components/dashboard/top-products";
 import { DocStatusBadge } from "@/components/documents/status-badge";
@@ -184,16 +184,13 @@ export default suspensePage(async function PanelPage() {
             </Card>
           )}
           {hasModule(ctx, "edonusum") && (
-            <Card className="border-plus/30 bg-plus/[0.03]">
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="size-4 text-plus" /> Gelen e-faturalar
-                  <Badge variant="plus">PLUS</Badge>
-                </CardTitle>
-                <CardDescription>AI, tedarikçi satırlarını stok kartlarınızla eşleştirip alış faturasını hazırlar.</CardDescription>
+                <CardTitle>Gelen e-faturalar</CardTitle>
+                <CardDescription>Alış faturasına dönüştürülmeyi bekleyenler</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button size="sm" variant="plus" asChild>
+                <Button size="sm" variant="outline" asChild>
                   <Link href="/plus/e-donusum/gelen">
                     <Inbox /> {inbox.n} yeni e-fatura
                   </Link>

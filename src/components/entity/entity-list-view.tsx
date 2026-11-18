@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page/page-header";
-import { Badge } from "@/components/ui/badge";
 import { ENTITIES, isEntityKey } from "@/lib/entities/registry";
 import { MODULE_MAP } from "@/lib/modules";
 import { db } from "@/server/db";
@@ -52,17 +51,8 @@ export async function EntityListView({
     <>
       <PageHeader
         breadcrumbs={[{ label: mod.short }, { label: def.plural }]}
-        title={
-          <span className="flex items-center gap-2">
-            {title ?? def.plural}
-            {mod.depth === "temel" && (
-              <Badge variant="muted" title="Prototip: kayıt/liste hazır, iş kuralları sonraki aşamada">
-                Temel sürüm
-              </Badge>
-            )}
-          </span>
-        }
-        description={description ?? def.description}
+        title={title ?? def.plural}
+        description={description}
         actions={actions}
       />
       <EntityTable

@@ -38,7 +38,6 @@ export default suspensePage(async function StockMovementsPage(props: PageProps<"
       <PageHeader
         breadcrumbs={[{ label: "Stok" }, { label: "Stok Hareketleri" }]}
         title="Stok Hareketleri"
-        description="Her satır bir belgeden doğar; hareketler silinmez, iptalde ters kayıt atılır."
       />
       <ListToolbar
         placeholder="Ürün veya belge no..."

@@ -21,7 +21,6 @@ import {
   updateTenantProfileAction,
 } from "@/server/services/super-admin-actions";
 
-const DEPTH_LABEL = { cekirdek: "Çekirdek", temel: "Temel", vitrin: "Vitrin" } as const;
 
 export function ModuleSwitches({ tenantId, enabled }: { tenantId: string; enabled: string[] }) {
   const [optimistic, setOptimistic] = useOptimistic(new Set(enabled), (state, action: { key: string; on: boolean }) => {
@@ -67,7 +66,6 @@ export function ModuleSwitches({ tenantId, enabled }: { tenantId: string; enable
                       <span className="truncate">{m.short}</span>
                       {m.tier === "plus" && <Badge variant="plus">PLUS</Badge>}
                     </span>
-                    <span className="text-[11px] text-muted-foreground">Prototip: {DEPTH_LABEL[m.depth]}</span>
                   </span>
                   <Switch checked={on} onCheckedChange={(v) => toggle(m.key, v)} aria-label={m.name} />
                 </label>

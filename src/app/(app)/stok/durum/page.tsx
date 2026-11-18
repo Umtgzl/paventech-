@@ -39,7 +39,6 @@ export default suspensePage(async function StockStatusPage(props: PageProps<"/st
       <PageHeader
         breadcrumbs={[{ label: "Stok" }, { label: "Stok Durumu" }]}
         title="Stok Durumu"
-        description="Miktarlar onaylı belgelerin hareketlerinden anlık hesaplanır."
       />
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
         <StatCard label="Stok değeri" value={formatMoney(value)} hint="Ortalama maliyetle" />

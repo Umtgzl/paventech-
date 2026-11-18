@@ -71,25 +71,18 @@ export function PortalPreview({
   const categories = [...new Set(catalog.map((c) => c.category))];
 
   return (
-    <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
-      {/* Tarayıcı penceresi görünümü: bayinin gördüğü ekran */}
-      <div className="flex items-center gap-2 border-b bg-muted/50 px-4 py-2">
-        <span className="size-2.5 rounded-full bg-destructive/50" />
-        <span className="size-2.5 rounded-full bg-warning/70" />
-        <span className="size-2.5 rounded-full bg-success/60" />
-        <span className="ml-3 flex-1 truncate rounded-md bg-card px-3 py-1 font-mono text-xs text-muted-foreground">bayi.{companyName.toLocaleLowerCase("tr-TR").replace(/[^a-z0-9ğüşıöç]+/g, "-")}.com</span>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-6 py-4 text-primary-foreground">
+    <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/40 px-6 py-4">
         <div>
-          <p className="text-xs opacity-80">{companyName} · Bayi Portalı</p>
-          <p className="text-lg font-semibold">Hoş geldiniz, {dealer.name}</p>
+          <p className="text-xs text-muted-foreground">{companyName} · Bayi Portalı</p>
+          <p className="text-lg font-semibold">{dealer.name}</p>
         </div>
         <div className="text-right">
-          <p className="text-xs opacity-80">Güncel bakiyeniz</p>
+          <p className="text-xs text-muted-foreground">Güncel bakiye</p>
           <p className="text-lg font-semibold">
             {formatMoney(bal.abs().toString())} {bal.gt(0) ? "borç" : bal.lt(0) ? "alacak" : ""}
           </p>
-          {dec(balance.overdue).gt(0) && <p className="text-xs">Vadesi geçen: {formatMoney(balance.overdue)}</p>}
+          {dec(balance.overdue).gt(0) && <p className="text-xs text-destructive">Vadesi geçen: {formatMoney(balance.overdue)}</p>}
         </div>
       </div>
       <div className="p-6">

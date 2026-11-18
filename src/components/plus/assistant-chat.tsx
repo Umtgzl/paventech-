@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Bot, Loader2, Send, User } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,7 +48,7 @@ export function AssistantChat() {
             <p className="text-sm text-muted-foreground">Örnek sorular:</p>
             <div className="flex flex-wrap gap-2">
               {SUGGESTIONS.map((s) => (
-                <button key={s} type="button" onClick={() => ask(s)} className="rounded-full border bg-card px-3 py-1.5 text-sm hover:border-plus/40 hover:bg-plus/[0.04]">
+                <button key={s} type="button" onClick={() => ask(s)} className="rounded-md border bg-card px-3 py-1.5 text-sm hover:bg-muted">
                   {s}
                 </button>
               ))}
@@ -58,13 +58,11 @@ export function AssistantChat() {
         {messages.map((m, i) =>
           m.role === "user" ? (
             <div key={i} className="flex justify-end gap-2">
-              <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-primary px-4 py-2 text-sm text-primary-foreground">{m.text}</div>
-              <User className="mt-1.5 size-4 shrink-0 text-muted-foreground" />
+              <div className="max-w-[80%] rounded-md bg-muted px-3 py-2 text-sm">{m.text}</div>
             </div>
           ) : (
             <div key={i} className="flex gap-2">
-              <Bot className="mt-1.5 size-4 shrink-0 text-plus" />
-              <div className="min-w-0 flex-1 rounded-2xl rounded-bl-sm border bg-muted/30 px-4 py-3 text-sm">
+              <div className="min-w-0 flex-1 rounded-md border px-4 py-3 text-sm">
                 {m.answer ? (
                   <>
                     <p className="font-semibold">{m.answer.title}</p>
@@ -125,7 +123,7 @@ export function AssistantChat() {
           }}
         >
           <Input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="Örn. Bu ay en çok satan 5 ürün hangisi?" maxLength={300} />
-          <Button type="submit" variant="plus" disabled={pending || question.trim().length < 3}>
+          <Button type="submit" disabled={pending || question.trim().length < 3}>
             <Send /> Sor
           </Button>
         </form>

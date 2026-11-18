@@ -32,7 +32,6 @@ export default suspensePage(async function CashPage() {
       <PageHeader
         breadcrumbs={[{ label: "Kasa & Banka" }, { label: "Hesaplar" }]}
         title="Kasa ve Banka Hesapları"
-        description="Bakiyeler tahsilat, ödeme, masraf ve virman fişlerinden anlık hesaplanır."
         actions={
           <>
             <Button variant="outline" asChild>

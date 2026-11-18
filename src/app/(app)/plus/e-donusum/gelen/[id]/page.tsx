@@ -29,7 +29,6 @@ export default suspensePage(async function InboxDetailPage(props: PageProps<"/pl
         module="e-Dönüşüm"
         title={`e-Fatura ${item.number}`}
         description={`${item.supplierName} · ${formatDate(item.date)} · ${formatMoney(item.grandTotal)}`}
-        note="Eşleştirme açıklanabilir bir benzerlik algoritmasıyla yapılır (kelime, yazım ve ölçü uyumu). Onayladığınız eşleşmeler öğrenilir; canlıda düşük güvenli satırlar dil modeline danışılacak."
       />
       {item.status !== "yeni" ? (
         <Card>

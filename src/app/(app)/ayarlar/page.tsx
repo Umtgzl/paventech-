@@ -41,7 +41,7 @@ export default suspensePage(async function SettingsPage() {
 
   return (
     <>
-      <PageHeader title="Şirket Ayarları" description={`${ctx.tenantName} şirketinin bilgileri, paketi ve kullanıcıları.`} />
+      <PageHeader title="Şirket Ayarları" />
 
       <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
         <div className="flex flex-col gap-5">
