@@ -33,13 +33,8 @@ export function LoginForm({ demo }: { demo: boolean }) {
     const { error: err } = await authClient.signIn.email({ email, password });
     if (err) {
       setLoading(false);
-      setError(
-        err.status === 401
-          ? "E-posta veya şifre hatalı."
-          : err.status === 403
-            ? "Bu adresten girişe izin verilmiyor. Sayfayı uygulamanın kendi adresinden açın."
-            : "Giriş yapılamadı. Lütfen tekrar deneyin.",
-      );
+      // Kod (ör. INVALID_ORIGIN) destekte sorunun yerini bulmayı kolaylaştırır
+      setError(err.status === 401 ? "E-posta veya şifre hatalı." : `Giriş yapılamadı (${err.code ?? err.status}).`);
       return;
     }
     const target = params.get("donus");
@@ -49,7 +44,7 @@ export function LoginForm({ demo }: { demo: boolean }) {
 
   return (
     <>
-      <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-4">
+      <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor="email">E-posta</Label>
           <Input
@@ -80,14 +75,15 @@ export function LoginForm({ demo }: { demo: boolean }) {
       </form>
 
       {demo && (
-        <div className="mt-6 border-t pt-4 text-sm">
-          <p className="text-xs text-muted-foreground">Demo hesapları (şifre: demo1234)</p>
-          <div className="mt-2 flex flex-col gap-1.5">
+        <div className="mt-8 rounded-lg border bg-muted/40 p-4 text-sm">
+          <p className="font-medium">Demo hesapları</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Şifre: demo1234</p>
+          <div className="mt-3 flex flex-col gap-1.5">
             {DEMO_USERS.map((u) => (
               <button
                 key={u.email}
                 type="button"
-                className="flex items-center justify-between rounded-md border px-3 py-2 text-left hover:bg-muted"
+                className="flex items-center justify-between rounded-md border bg-card px-3 py-2 text-left hover:bg-accent"
                 onClick={() => {
                   setEmail(u.email);
                   setPassword("demo1234");

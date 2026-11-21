@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { CODESPACES_HOST_PATTERN, runningInCodespaces } from "./src/lib/codespaces";
 
 // Uygulama bir proxy / tünel arkasında başka bir adresten açılıyorsa (ör. GitHub Codespaces:
 // https://<codespace>-3000.app.github.dev), sunucu kendini localhost:3000 sanar. O adresten
@@ -7,9 +8,9 @@ import type { NextConfig } from "next";
 const publicUrl = process.env.BETTER_AUTH_URL ? new URL(process.env.BETTER_AUTH_URL) : null;
 const proxied = publicUrl && !["localhost", "127.0.0.1"].includes(publicUrl.hostname) ? publicUrl : null;
 // Codespaces içinde adres ayarı tutmasa bile tüm codespace adreslerine izin ver
-const codespaces = process.env.CODESPACES === "true";
-const extraHosts = [...(proxied ? [proxied.host] : []), ...(codespaces ? ["*.app.github.dev"] : [])];
-const extraHostnames = [...(proxied ? [proxied.hostname] : []), ...(codespaces ? ["*.app.github.dev"] : [])];
+const codespaces = runningInCodespaces();
+const extraHosts = [...(proxied ? [proxied.host] : []), ...(codespaces ? [CODESPACES_HOST_PATTERN] : [])];
+const extraHostnames = [...(proxied ? [proxied.hostname] : []), ...(codespaces ? [CODESPACES_HOST_PATTERN] : [])];
 
 const nextConfig: NextConfig = {
   // Next.js 16 varsayılanları: sayfalar statik bir kabukla açılır, veriye bağlı

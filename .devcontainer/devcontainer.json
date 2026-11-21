@@ -12,6 +12,7 @@
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "postStartCommand": "sudo service postgresql start",
   "postAttachCommand": "bash .devcontainer/start.sh",
+  "containerEnv": { "PAVENTECH_CODESPACES": "1" },
   "hostRequirements": { "cpus": 2, "memory": "4gb" },
   "customizations": {
     "codespaces": { "openFiles": ["README.md"] },

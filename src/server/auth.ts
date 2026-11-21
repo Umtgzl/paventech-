@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, organization } from "better-auth/plugins";
 import { db } from "@/server/db";
 import * as schema from "@/server/db/schema";
+import { CODESPACES_HOST_PATTERN, runningInCodespaces } from "@/lib/codespaces";
 
 /**
  * Kimlik doğrulama.
@@ -20,7 +21,7 @@ import * as schema from "@/server/db/schema";
  */
 const trustedOrigins = [
   ...(process.env.TRUSTED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
-  ...(process.env.CODESPACES === "true" ? ["https://*.app.github.dev"] : []),
+  ...(runningInCodespaces() ? [`https://${CODESPACES_HOST_PATTERN}`] : []),
 ];
 
 export const auth = betterAuth({
