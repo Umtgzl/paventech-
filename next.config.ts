@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { CODESPACES_HOST_PATTERN, runningInCodespaces } from "./src/lib/codespaces";
+import { CODESPACES_HOST_PATTERN, demoMode, runningInCodespaces } from "./src/lib/codespaces";
 
 // Uygulama bir proxy / tünel arkasında başka bir adresten açılıyorsa (ör. GitHub Codespaces:
 // https://<codespace>-3000.app.github.dev), sunucu kendini localhost:3000 sanar. O adresten
@@ -8,7 +8,7 @@ import { CODESPACES_HOST_PATTERN, runningInCodespaces } from "./src/lib/codespac
 const publicUrl = process.env.BETTER_AUTH_URL ? new URL(process.env.BETTER_AUTH_URL) : null;
 const proxied = publicUrl && !["localhost", "127.0.0.1"].includes(publicUrl.hostname) ? publicUrl : null;
 // Codespaces içinde adres ayarı tutmasa bile tüm codespace adreslerine izin ver
-const codespaces = runningInCodespaces();
+const codespaces = runningInCodespaces() || demoMode();
 const extraHosts = [...(proxied ? [proxied.host] : []), ...(codespaces ? [CODESPACES_HOST_PATTERN] : [])];
 const extraHostnames = [...(proxied ? [proxied.hostname] : []), ...(codespaces ? [CODESPACES_HOST_PATTERN] : [])];
 

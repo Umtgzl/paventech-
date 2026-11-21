@@ -5,7 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, organization } from "better-auth/plugins";
 import { db } from "@/server/db";
 import * as schema from "@/server/db/schema";
-import { CODESPACES_HOST_PATTERN, runningInCodespaces } from "@/lib/codespaces";
+import { CODESPACES_HOST_PATTERN, demoMode, runningInCodespaces } from "@/lib/codespaces";
 
 /**
  * Kimlik doğrulama.
@@ -19,10 +19,23 @@ import { CODESPACES_HOST_PATTERN, runningInCodespaces } from "@/lib/codespaces";
  * BETTER_AUTH_URL yanlış kalsa bile giriş "Invalid origin" ile reddedilmesin.
  * TRUSTED_ORIGINS: virgülle ayrılmış adresler veya kalıplar (https://*.ornek.com).
  */
-const trustedOrigins = [
+const staticTrustedOrigins = [
   ...(process.env.TRUSTED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
-  ...(runningInCodespaces() ? [`https://${CODESPACES_HOST_PATTERN}`] : []),
+  ...(runningInCodespaces() || demoMode() ? [`https://${CODESPACES_HOST_PATTERN}`] : []),
 ];
+
+/**
+ * Demo ortamında (kurgusal veri) girişin geldiği adres her zaman kabul edilir: Codespaces
+ * gibi tünellerde tarayıcının adresi önceden bilinemiyor, tünel başlıkları değiştirebiliyor.
+ * Canlı ortamda (NEXT_PUBLIC_DEMO=0) yalnızca BETTER_AUTH_URL ve listedeki adresler geçer.
+ */
+function trustedOrigins(request?: Request): string[] {
+  if (!demoMode() || !request) return staticTrustedOrigins;
+  const origin = request.headers.get("origin");
+  const referer = request.headers.get("referer");
+  const fromRequest = origin && origin !== "null" ? origin : referer ? new URL(referer).origin : null;
+  return fromRequest ? [...staticTrustedOrigins, fromRequest] : staticTrustedOrigins;
+}
 
 export const auth = betterAuth({
   appName: "Paventech ERP",
