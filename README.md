@@ -13,7 +13,7 @@ kayıt motoruyla, Plus modüller örnek veriyle çalışan önizlemelerle gelir
 
 ## Uygulamayı açmak
 
-### A) Tarayıcıda, hiçbir şey kurmadan (önerilen)
+### A) Tarayıcıda, hiçbir şey kurmadan (GitHub Codespaces)
 
 GitHub Codespaces, uygulamayı GitHub'ın bulut makinesinde çalıştırır. Bilgisayara bir şey
 kurmak gerekmez; bilgisayar tarayıcısı yeterli (telefonda zahmetli olur).
@@ -36,19 +36,37 @@ Bilinmesi gerekenler:
 - **Kod değiştirip anında görmek** için uygulamanın çalıştığı terminalde `Ctrl+C` ile durdurun, sonra `pnpm dev` çalıştırın.
 - **Sayfa "HTTP ERROR 401" verirse:** GitHub portu özel tutuyor. **Bağlantı Noktaları (PORTS)** sekmesinde 3000 satırına sağ tıklayın → **Bağlantı Noktası Görünürlüğü → Genel** seçin, sayfayı yenileyin. (Bu, adresi bilen herkesin giriş sayfasını görebilmesi demek; demo veri kurgusal olduğu için sorun değil, işiniz bitince **Özel**'e geri alabilirsiniz.)
 
-### B) Kendi bilgisayarında
+### B) Kendi bilgisayarında (Windows dahil)
 
-Gereksinimler: Node.js 22+, pnpm 10+, Docker (veya yerel PostgreSQL 16).
+En sağlam yol budur: uygulama `localhost` üzerinden açılır, araya tünel girmez.
+
+1. **Node.js** kurun: [nodejs.org](https://nodejs.org) → LTS sürümü → kurulumda hep İleri.
+2. **PostgreSQL** kurun: [postgresql.org/download/windows](https://www.postgresql.org/download/windows/) → installer.
+   - Kurulumda `postgres` kullanıcısı için bir şifre belirleyin; yalnızca harf ve rakam kullanın, bir yere not edin.
+   - Port 5432 kalsın.
+   - Stack Builder'ı atlayın.
+3. **Kodu indirin:** depo sayfasında yeşil **Code** → **Download ZIP** → bir klasöre çıkarın.
+4. **VS Code'da açın:** File → Open Folder → çıkardığınız klasör.
+5. **Terminal açın:** Terminal → New Terminal. Terminal panelinde **+** işaretinin yanındaki oktan **Command Prompt**'u seçin (PowerShell'in betik engeline takılmamak için).
+6. Sırayla çalıştırın:
+   ```
+   npm install -g pnpm@10.28.0
+   pnpm install
+   pnpm kurulum
+   pnpm demo
+   ```
+   `pnpm kurulum` PostgreSQL şifresini sorar. `.env`'i yazar, veritabanını oluşturur ve demo veriyi yükler.
+7. Tarayıcıda **http://localhost:3000** adresini açın.
+
+Sonraki açılışlarda yalnızca `pnpm demo` yeterli. Demo veriyi baştan yüklemek için: `pnpm db:reset`.
+
+macOS / Linux'ta Docker ile:
 
 ```bash
-cp .env.example .env
-# .env içinde BETTER_AUTH_SECRET'ı doldurun:
-node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
-
-docker compose up -d     # PostgreSQL 16 (geliştirme + test veritabanı)
+docker compose up -d     # PostgreSQL 16
 pnpm install
-pnpm db:reset            # tabloları kurar ve demo veriyi yükler (~10 sn)
-pnpm dev                 # http://localhost:3000
+pnpm kurulum             # kullanıcı: paventech, şifre: paventech
+pnpm demo                # http://localhost:3000
 ```
 
 ### Demo hesapları
@@ -65,6 +83,8 @@ pnpm dev                 # http://localhost:3000
 
 | Komut | Ne yapar |
 | --- | --- |
+| `pnpm kurulum` | İlk kurulum: `.env`, veritabanı, demo veri (PostgreSQL şifresini sorar) |
+| `pnpm demo` | Derleyip hızlı modda başlatır (sunum için) |
 | `pnpm dev` | Geliştirme sunucusu |
 | `pnpm build` / `pnpm start` | Üretim derlemesi / çalıştırma |
 | `pnpm test` | Birim ve entegrasyon testleri (`TEST_DATABASE_URL` veritabanını sıfırlar) |
